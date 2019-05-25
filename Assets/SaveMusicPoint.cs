@@ -9,7 +9,6 @@ public class SaveMusicPoint : MonoBehaviour
     public object LocalCopyOfData { get; private set; }
     public AudioSource musicSource;
     public AudioClip[] clips;
-    public MusicTime time;
 
     private void Start()
     {
@@ -38,49 +37,5 @@ public class SaveMusicPoint : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void SaveData()
-    {
-        try
-        {
-            if (!Directory.Exists("Saves"))
-                Directory.CreateDirectory("Saves");
-        }
-        catch
-        {
-            Directory.CreateDirectory("Saves");
-        }
-        
-        
-
-
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream saveFile = File.Create("Saves/save.binary");
-
-
-        MusicTime _time = this.GetComponent<MusicTime>();
-        MusicTime.instance = _time;
-        LocalCopyOfData = MusicTime.instance;
-        MusicTime.instance.time = Time.timeSinceLevelLoad;
-        Debug.Log(MusicTime.instance.time);
-        formatter.Serialize(saveFile, LocalCopyOfData);
-        Debug.Log(LocalCopyOfData);
-        saveFile.Close();
-    }
-
-    public void LoadData()
-    {
-        if (!Directory.Exists("Saves"))
-            Directory.CreateDirectory("Saves");
-
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream saveFile = File.Open("Saves/save.binary", FileMode.Open);
-
-        LocalCopyOfData = (MusicTime)formatter.Deserialize(saveFile);
-        time = (MusicTime)LocalCopyOfData;
-        time.source = musicSource;
-        musicSource.time = time.time;
-        saveFile.Close();
     }
 }
